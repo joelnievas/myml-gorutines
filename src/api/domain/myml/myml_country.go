@@ -1,28 +1,20 @@
 package myml
 
 import (
-	"io/ioutil"
-	"github.com/mercadolibre/myml/src/api/utils/apierrors"
-	"net/http"
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"github.com/mercadolibre/myml-gorutines/src/api/utils/apierrors"
+	"io/ioutil"
+	"net/http"
 )
 
 type Country struct {
-	ID                 string `json:"id"`
-	Name               string `json:"name"`
-	CurrencyID         string `json:"currency_id"`
-	GeoInformation     struct {
-		Location struct {
-			Latitude  float64 `json:"latitude"`
-			Longitude float64 `json:"longitude"`
-		} `json:"location"`
-	} `json:"geo_information"`
-
+	ID         string `json:"id"`
+	Name       string `json:"name"`
+	CurrencyID string `json:"currency_id"`
 }
 
-
-const urlCounty = "https://api.mercadolibre.com/countries/"
+const urlCounty = "http://localhost:8081/country/"
 
 func (country *Country) Get() *apierrors.ApiError {
 	if country.ID == "" {
@@ -34,6 +26,7 @@ func (country *Country) Get() *apierrors.ApiError {
 
 	final := fmt.Sprintf("%s%s", urlCounty, country.ID)
 	response, err := http.Get(final)
+	defer response.Body.Close()
 	if err != nil {
 		return &apierrors.ApiError{
 			Message: err.Error(),

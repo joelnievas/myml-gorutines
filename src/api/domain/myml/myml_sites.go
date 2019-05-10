@@ -3,7 +3,7 @@ package myml
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/mercadolibre/myml/src/api/utils/apierrors"
+	"github.com/mercadolibre/myml-gorutines/src/api/utils/apierrors"
 	"io/ioutil"
 	"net/http"
 )
@@ -15,7 +15,7 @@ type (
 	}
 )
 
-const urlSite = "https://api.mercadolibre.com/sites/"
+const urlSite = "http://localhost:8081/site/"
 
 func (site *Site) Get() *apierrors.ApiError {
 	if site.ID == "" {
@@ -26,8 +26,9 @@ func (site *Site) Get() *apierrors.ApiError {
 	}
 
 	final := fmt.Sprintf("%s%s", urlSite, site.ID)
-	fmt.Print(final)
+
 	response, err := http.Get(final)
+	defer response.Body.Close()
 	if err != nil {
 		return &apierrors.ApiError{
 			Message: err.Error(),
